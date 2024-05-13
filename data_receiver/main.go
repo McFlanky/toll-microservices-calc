@@ -1,16 +1,23 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/McFlanky/toll-microservices-calc/types"
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/gorilla/websocket"
 )
 
+var kafkaTopic = "obuData"
+
 func main() {
-	recv := NewDataReceiver()
+	recv, err := NewDataReceiver()
+	if err != nil {
+		log.Fatal(err)
+	}
 	http.HandleFunc("/ws", recv.handlerWS)
 	http.ListenAndServe(":30000", nil)
 }
@@ -18,13 +25,46 @@ func main() {
 type DataReceiver struct {
 	msgCh chan types.OBUData
 	conn  *websocket.Conn
+	prod  *kafka.Producer
 }
 
-func NewDataReceiver() *DataReceiver {
+func NewDataReceiver() (*DataReceiver, error) {
+	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost"})
+	if err != nil {
+		return nil, err
+	}
+	// Delivery report handler for produced messages "Start another go routine to check if we delivered data"
+	go func() {
+		for e := range p.Events() {
+			switch ev := e.(type) {
+			case *kafka.Message:
+				if ev.TopicPartition.Error != nil {
+					fmt.Printf("Delivery failed: %v\n", ev.TopicPartition)
+				} else {
+					fmt.Printf("Delivered message to %v\n", ev.TopicPartition)
+				}
+			}
+		}
+	}()
 	return &DataReceiver{
 		msgCh: make(chan types.OBUData, 128),
-		conn:  nil,
+		prod:  p,
+	}, nil
+}
+
+func (dr *DataReceiver) produceData(data types.OBUData) error {
+	b, err := json.Marshal(data)
+	if err != nil {
+		return err
 	}
+	err = dr.prod.Produce(&kafka.Message{
+		TopicPartition: kafka.TopicPartition{
+			Topic:     &kafkaTopic,
+			Partition: kafka.PartitionAny,
+		},
+		Value: b,
+	}, nil)
+	return err
 }
 
 func (dr *DataReceiver) handlerWS(w http.ResponseWriter, r *http.Request) {
@@ -49,7 +89,8 @@ func (dr *DataReceiver) wsReceiveLoop() {
 			log.Println("read error: ", err)
 			continue
 		}
-		fmt.Printf("received OBU data from [%d] :: <lat %.2f, long %.2f> \n", data.OBUID, data.Lat, data.Long)
-		dr.msgCh <- data
+		if err := dr.produceData(data); err != nil {
+			fmt.Println("kafka produce error: ", err)
+		}
 	}
 }
