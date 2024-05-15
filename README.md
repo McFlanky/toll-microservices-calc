@@ -24,3 +24,17 @@ go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 ```
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 ```
+3. NOTE that you need to set /go/bin directory in your path or wherever your Go directory lives
+```
+PATH="${PATH}:${HOME}/go/bin"
+```
+
+4. Install the package dependencies 
+4.1 protobuffer package
+```
+go get google.golang.org/protobuf/runtime/protoimpl
+```
+4.2 grpc package
+```
+go get google.golang.org/grpc
+```
