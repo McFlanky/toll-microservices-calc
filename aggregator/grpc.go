@@ -1,6 +1,10 @@
 package main
 
-import "github.com/McFlanky/toll-microservices-calc/types"
+import (
+	"context"
+
+	"github.com/McFlanky/toll-microservices-calc/types"
+)
 
 type GRPCAggregatorServer struct {
 	types.UnimplementedAggregatorServer
@@ -20,11 +24,11 @@ func NewAggregatorGRPCServer(svc Aggregator) *GRPCAggregatorServer {
 
 // business layer -> business layer type (main type all needs to convert to)
 
-func (s *GRPCAggregatorServer) AggregateDistance(req *types.AggregateRequest) error {
+func (s *GRPCAggregatorServer) Aggregate(ctx context.Context, req *types.AggregateRequest) (*types.None, error) {
 	distance := types.Distance{
 		OBUID: int(req.ObuID),
 		Value: req.Value,
 		Unix:  req.Unix,
 	}
-	return s.svc.AggregateDistance(distance)
+	return &types.None{}, s.svc.AggregateDistance(distance)
 }
