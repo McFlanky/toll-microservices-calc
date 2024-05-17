@@ -38,3 +38,37 @@ go get google.golang.org/protobuf/runtime/protoimpl
 ```
 go get google.golang.org/grpc
 ```
+
+### Installing Prometheus
+Install Prometheus in a Docker Container
+```
+docker run -p 9090:9090 -v ./.config/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+```
+
+Installing Prometheus golang client
+```
+go get github.com/prometheus/client_golang/prometheus
+```
+
+Installing Prometheus natively in your system
+1. Clone the repository
+```
+git clone https://github.com/prometheus/prometheus.git
+cd prometheus
+```
+
+2. Install it
+```
+make build
+```
+
+3. Run the Prometheus Deamon
+```
+./prometheus --config.file=<your_config_file>yml
+```
+
+4. In this project's case, that would be (running from inside the project directory)
+```
+./prometheus/prometheus --config.file=.config/prometheus.yml
+```
+
