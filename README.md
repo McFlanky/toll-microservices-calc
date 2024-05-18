@@ -4,6 +4,13 @@
 docker compose up -d
 ```
 
+### Make .env file & setup enviroment variables
+```
+AGG_HTTP_ENDPOINT=<your chosen port number>
+AGG_GRPC_ENDPOINT=<your chosen port number>
+AGG_STORE_TYPE=memory
+```
+
 ### Install protobuf compiler (protoc compiler)
 For linux users or WSL2
 ```
