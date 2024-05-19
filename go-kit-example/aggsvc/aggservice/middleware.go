@@ -1,4 +1,4 @@
-package main
+package aggservice
 
 import (
 	"context"
@@ -12,7 +12,7 @@ type loggingMiddleware struct {
 	next Service
 }
 
-func newLoggingMiddlware() Middleware {
+func newLoggingMiddleware() Middleware {
 	return func(next Service) Service {
 		return &loggingMiddleware{
 			next: next,
@@ -32,7 +32,7 @@ type instrumentationMiddleware struct {
 	next Service
 }
 
-func newInstrumentationMiddlware() Middleware {
+func newInstrumentationMiddleware() Middleware {
 	return func(next Service) Service {
 		return &instrumentationMiddleware{
 			next: next,
