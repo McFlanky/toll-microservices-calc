@@ -8,8 +8,10 @@ import (
 	"github.com/McFlanky/toll-microservices-calc/types"
 	"github.com/go-kit/kit/circuitbreaker"
 	"github.com/go-kit/kit/endpoint"
+	"github.com/go-kit/kit/metrics/prometheus"
 	"github.com/go-kit/kit/ratelimit"
 	"github.com/go-kit/log"
+	stdprometheus "github.com/prometheus/client_golang/prometheus"
 	"github.com/sony/gobreaker"
 	"golang.org/x/time/rate"
 )
@@ -20,25 +22,32 @@ type Set struct {
 }
 
 func New(svc aggservice.Service, logger log.Logger) Set {
+	duration := prometheus.NewSummaryFrom(stdprometheus.SummaryOpts{
+		Namespace: "toll_calculator",
+		Subsystem: "aggservice",
+		Name:      "request_duration_seconds",
+		Help:      "Request duration in seconds.",
+	}, []string{"method", "success"})
+
 	var aggregateEndpoint endpoint.Endpoint
 	{
 		aggregateEndpoint = MakeAggregateEndpoint(svc)
-		// Sum is limited to 1 request per second with burst of 1 request.
+		// Aggregate is limited to 1 request per second with burst of 1 request.
 		// Note, rate is defined as a time interval between requests.
 		aggregateEndpoint = ratelimit.NewErroringLimiter(rate.NewLimiter(rate.Every(time.Second), 1))(aggregateEndpoint)
 		aggregateEndpoint = circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{}))(aggregateEndpoint)
-		// aggregateEndpoint = LoggingMiddleware(log.With(logger, "method", "Sum"))(aggregateEndpoint)
-		// aggregateEndpoint = InstrumentingMiddleware(duration.With("method", "Sum"))(aggregateEndpoint)
+		aggregateEndpoint = LoggingMiddleware(log.With(logger, "method", "Aggregate"))(aggregateEndpoint)
+		aggregateEndpoint = InstrumentatingMiddleware(duration.With("method", "Aggregate"))(aggregateEndpoint)
 	}
 	var calculateEndpoint endpoint.Endpoint
 	{
 		calculateEndpoint = MakeConcatEndpoint(svc)
-		// Concat is limited to 1 request per second with burst of 100 requests.
+		// Calculate is limited to 1 request per second with burst of 100 requests.
 		// Note, rate is defined as a number of requests per second.
 		calculateEndpoint = ratelimit.NewErroringLimiter(rate.NewLimiter(rate.Limit(1), 100))(calculateEndpoint)
 		calculateEndpoint = circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{}))(calculateEndpoint)
-		// calculateEndpoint = LoggingMiddleware(log.With(logger, "method", "Concat"))(calculateEndpoint)
-		// calculateEndpoint = InstrumentingMiddleware(duration.With("method", "Concat"))(calculateEndpoint)
+		calculateEndpoint = LoggingMiddleware(log.With(logger, "method", "Invoice"))(calculateEndpoint)
+		calculateEndpoint = InstrumentatingMiddleware(duration.With("method", "Invoice"))(calculateEndpoint)
 	}
 	return Set{
 		AggregateEndpoint: aggregateEndpoint,

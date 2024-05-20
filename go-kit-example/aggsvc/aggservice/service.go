@@ -2,9 +2,9 @@ package aggservice
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/McFlanky/toll-microservices-calc/types"
+	"github.com/go-kit/kit/log"
 )
 
 const basePrice = 3.15
@@ -30,7 +30,6 @@ func newBasicService(store Storer) Service {
 }
 
 func (svc *BasicService) Aggregate(_ context.Context, dist types.Distance) error {
-	fmt.Println("this is coming from the internal business logic layer")
 	return svc.store.Insert(dist)
 }
 
@@ -49,11 +48,11 @@ func (svc *BasicService) Calculate(_ context.Context, obuID int) (*types.Invoice
 
 // NewAggregatorService will construct a complete microservice
 // with logging and instrumentation middleware
-func New() Service {
+func New(logger log.Logger) Service {
 	var svc Service
 	{
 		svc = newBasicService(NewMemoryStore())
-		svc = newLoggingMiddleware()(svc)
+		svc = newLoggingMiddleware(logger)(svc)
 		svc = newInstrumentationMiddleware()(svc)
 	}
 	return svc
