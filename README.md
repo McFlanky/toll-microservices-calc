@@ -4,9 +4,18 @@ Microservice-based architecture application containing services:
 - Data Receiver
 - Distance Calculator
 - Invoice Aggregator </br>
+
 ```
 This application was made to demonstrate the effectiveness of building microservices in Golang. While also testing myself
+to not only create my custom transport layers and metrics system with Prometheus/Grafana, but also custom microservice
+architecture without microservice frameworks.
+
+As an added layer of complexity I decided to rewrite my entire aggregator microservice using go-kit to build a more
+enterprise-like architecture to learn from. This has really cemented my skills in Golang coming from web servers/JSON apis.
 ```
+##### Below is a graphic representing how the services interact with each other:
+![image](https://github.com/McFlanky/toll-microservices-calc/assets/153543951/5e233021-2a41-402c-ad82-43e7ae8e7ec9)
+
 
 ## Getting Started & How to Make
 ### Run docker desktop then pasting this in your terminal to boot up container
@@ -117,6 +126,8 @@ make build
 ```
 ./prometheus/prometheus --config.file=.config/prometheus.yml
 ```
+
+Now at http://localhost:4000/metrics there will be a log of metrics showing if errors occured, if aggregation was called or if calculation was called and how many times and will be graphed in prometheus 
 
 ### Installing Grafana
 Install Grafana locally in Debian/Ubuntu for WSL2 users
