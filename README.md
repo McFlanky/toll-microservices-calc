@@ -5,8 +5,8 @@ Microservice-based architecture application containing services:
 - Distance Calculator
 - Invoice Aggregator </br>
 
-All are used effectively together to calculate a toll fee displayed from the invoice aggregator based on simulated OBU data of </br>
-latitude/longitude converted to distance traveled, then multipled by base price to get the toll fee for specific obu ID, among </br>
+All are used effectively together to calculate a toll fee displayed from the invoice aggregator based on simulated OBU data of 
+latitude/longitude converted to distance traveled, then multipled by base price to get the toll fee for specific obu ID, among 
 other processes as described below...
 
 ```
