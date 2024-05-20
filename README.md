@@ -5,9 +5,13 @@ Microservice-based architecture application containing services:
 - Distance Calculator
 - Invoice Aggregator </br>
 
+All are used effectively together to calculate a toll fee displayed from the invoice aggregator based on simulated OBU data of </br>
+latitude/longitude converted to distance traveled, then multipled by base price to get the toll fee for specific obu ID, among </br>
+other processes as described below...
+
 ```
 This application was made to demonstrate the effectiveness of building microservices in Golang. While also testing myself
-to not only create my custom transport layers and metrics system with Prometheus/Grafana, but also custom microservice
+to not only create my custom transport layers and metrics system with Prometheus/Grafana, but also a custom microservice
 architecture without microservice frameworks.
 
 As an added layer of complexity I decided to rewrite my entire aggregator microservice using go-kit to build a more
