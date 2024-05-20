@@ -16,6 +16,14 @@ enterprise-like architecture to learn from. This has really cemented my skills i
 ##### Below is a graphic representing how the services interact with each other:
 ![image](https://github.com/McFlanky/toll-microservices-calc/assets/153543951/5e233021-2a41-402c-ad82-43e7ae8e7ec9)
 
+### ⚙️ Tech Stack
+- Golang
+- Apache Kafka
+- Gorilla (Golang web toolkit)
+- gRPC & Protobuffers
+- Prometheus
+- Grafana
+
 
 ## Getting Started & How to Make
 ### Run docker desktop then pasting this in your terminal to boot up container
@@ -47,11 +55,11 @@ And POST requests to:</br>
 http://localhost:4000/aggregate to post your own "invoice" in the form of JSON with a value(int), obuID(int), unix(int)</br>
 
 All information for each Microservice, in each seperate terminal, is shown as such:</br>
-### Aggregator: 🏁 Finish Line</br>
+### Invoice Aggregator: 🏁 Finish Line</br>
 ![image](https://github.com/McFlanky/toll-microservices-calc/assets/153543951/991c31ab-96c5-46fd-bf64-1b87eb1cf43b)</br>
 ### Distance Calculator: ⬆️</br>
 ![image](https://github.com/McFlanky/toll-microservices-calc/assets/153543951/47020253-a881-439e-ad36-77b52198de9b)</br>
-### Receiver: ⬆️</br>
+### Data Receiver: ⬆️</br>
 ![image](https://github.com/McFlanky/toll-microservices-calc/assets/153543951/79dc3231-d686-4c0c-9b39-fb54f7084b13)</br>
 ### OBU: ⬆️</br>
 ![image](https://github.com/McFlanky/toll-microservices-calc/assets/153543951/1005af63-bcf7-42af-b99b-482778fe9ba7)</br>
