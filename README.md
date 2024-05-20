@@ -26,7 +26,7 @@ enterprise-like architecture to learn from. This has really cemented my skills i
 
 
 ## Getting Started & How to Make
-### Run docker desktop then pasting this in your terminal to boot up container
+### Run docker desktop then paste this in your terminal to boot up container
 ```
 docker compose up -d
 ```
