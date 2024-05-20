@@ -1,15 +1,54 @@
-# toll-calculator
+# Toll Calculator
+Microservice-based architecture application containing services:
+- OBU
+- Data Receiver
+- Distance Calculator
+- Invoice Aggregator </br>
+```
+This application was made to demonstrate the effectiveness of building microservices in Golang. While also testing myself
+```
 
+## Getting Started & How to Make
+### Run docker desktop then pasting this in your terminal to boot up container
 ```
 docker compose up -d
 ```
 
 ### Make .env file & setup enviroment variables
+Check repo http.go/main.go in aggregator directory for further details
 ```
 AGG_HTTP_ENDPOINT=<your chosen port number>
 AGG_GRPC_ENDPOINT=<your chosen port number>
 AGG_STORE_TYPE=memory
 ```
+You can run the base application from here by running the servers as according to their MakeFile names, in order of: </br>
+- Make aggregator
+- Make calculator
+- Make receiver
+- Make obu
+  
+HTTP custom Gateway layer can be called with:
+- make gate 
+
+To send a GET request in http://localhost:6000/obu?={obuID} to get back how long it "took" & "uri"
+
+Now you can send GET requests to:</br>
+http://localhost:4000/invoice?obu={obuID_from_make_aggregator_terminal} to get individual information from each invoice</br>
+And POST requests to:</br>
+http://localhost:4000/aggregate to post your own "invoice" in the form of JSON with a value(int), obuID(int), unix(int)</br>
+
+All information for each Microservice, in each seperate terminal, is shown as such:</br>
+### Aggregator: 🏁 Finish Line</br>
+![image](https://github.com/McFlanky/toll-microservices-calc/assets/153543951/991c31ab-96c5-46fd-bf64-1b87eb1cf43b)</br>
+### Distance Calculator: ⬆️</br>
+![image](https://github.com/McFlanky/toll-microservices-calc/assets/153543951/47020253-a881-439e-ad36-77b52198de9b)</br>
+### Receiver: ⬆️</br>
+![image](https://github.com/McFlanky/toll-microservices-calc/assets/153543951/79dc3231-d686-4c0c-9b39-fb54f7084b13)</br>
+### OBU: ⬆️</br>
+![image](https://github.com/McFlanky/toll-microservices-calc/assets/153543951/1005af63-bcf7-42af-b99b-482778fe9ba7)</br>
+**MakeFile warning affects nothing**
+
+## Further Installation
 
 ### Install protobuf compiler (protoc compiler)
 For linux users or WSL2
